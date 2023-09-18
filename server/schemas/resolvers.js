@@ -4,7 +4,7 @@ const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
-    me: async (_, _, context) => {
+    me: async (_, args, context) => {
       if (!context.user) {
         throw new AuthenticationError('Not logged in');
       }
