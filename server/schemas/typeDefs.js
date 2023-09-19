@@ -5,13 +5,11 @@ type User {
   _id: ID!
   username: String!
   email: String!
-  password: String!
   bookCount: Int
   savedBooks: [Book]
 }
 
 type Book {
-  _id: ID!
   bookId: String!
   authors: [String]
   description: String!
