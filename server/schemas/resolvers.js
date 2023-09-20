@@ -8,21 +8,21 @@ const resolvers = {
       if (!context.user) {
         throw new AuthenticationError('Not logged in');
       }
-      const foundUser = await User.findOne({ _id: context.user._id });
-      if (!foundUser) {
+      const userData = await User.findById(context.user._id ).select("-__v -password");
+      if (!userData) {
         throw new AuthenticationError('Cannot find a user with this id!');
       }
-      return foundUser;
+      return userData;
     },
   },
 
   Mutation: {
-    loginUser: async (parent, { email, password }) => {
+    login: async (_, { email, password }) => {
       const user = await User.findOne({ email });
       if (!user) {
         throw new AuthenticationError('No user found with this email address');
       }
-      // If there is a user found, execute the `isCorrectPassword` instance method and check if the correct password was provided
+      // If there is a user found, check if the correct password was provided
       const correctPw = await user.isCorrectPassword(password);
       // If the password is incorrect, return an Authentication error stating so
       if (!correctPw) {
@@ -31,24 +31,25 @@ const resolvers = {
       // If email and password are correct, sign user into the application with a JWT
       const token = signToken(user);
 
-      // Return an `Auth` object that consists of the signed token and user's information
+      // Return Auth object with signed token and user's information
       return { token, user };
     },
 
-    addUser: async (parent, { username, email, password }) => {
+    addUser: async (_, { username, email, password }) => {
       // create the user
       const user = await User.create({ username, email, password });
-      // To reduce friction for the user, immediately sign a JSON Web Token and log the user in after they are created
+      // sign a JSON Web Token and log the user in after they are created
       const token = signToken(user);
-      // Return an `Auth` object that consists of the signed token and user's information
+      // Return Auth object with signed token and user's information
       return { token, user };
     },
 
     saveBook: async (_, { book }, context) => {
-      if (!context.user) {
+      if (!context) {
         throw new AuthenticationError('Not logged in');
       }
-      const updatedUser = await User.findOneByIdAndUpdate(
+      console.log({context});
+      const updatedUser = await User.findByIdAndUpdate(
         context.user._id,
         { $addToSet: { savedBooks: book } },
         { new: true }
@@ -60,7 +61,7 @@ const resolvers = {
       if (!context.user) {
         throw new AuthenticationError('Not logged in');
       }
-      const updatedUser = await User.findOneByIdAndUpdate(
+      const updatedUser = await User.findByIdAndUpdate(
         context.user._id,
         { $pull: { savedBooks: { bookId: bookId } } },
         { new: true }

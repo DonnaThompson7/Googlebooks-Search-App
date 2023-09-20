@@ -50,9 +50,9 @@ const SavedBooks = () => {
   // }, [userDataLength]);
 
   
-  if (!userData?.username) {
-    return <h4>Need to be logged in to see this page!</h4>;
-  }
+  // if (userData) {
+  //   return <h4>Need to be logged in to see this page!</h4>;
+  // }
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
@@ -101,12 +101,12 @@ const SavedBooks = () => {
       </div>
       <Container>
         <h2 className='pt-5'>
-          {userData.savedBooks.length
+          {userData.savedBooks?.length
             ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'}
         </h2>
         <Row>
-          {userData.savedBooks.map((book) => {
+          {userData.savedBooks?.map((book) => {
             return (
               <Col md="4">
                 <Card key={book.bookId} border='dark'>
