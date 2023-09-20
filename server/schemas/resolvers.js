@@ -8,6 +8,7 @@ const resolvers = {
       if (!context.user) {
         throw new AuthenticationError('Not logged in');
       }
+      console.log({context});
       const userData = await User.findById(context.user._id ).select("-__v -password");
       if (!userData) {
         throw new AuthenticationError('Cannot find a user with this id!');
