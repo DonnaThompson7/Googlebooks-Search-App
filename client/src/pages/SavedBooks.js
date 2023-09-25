@@ -8,10 +8,13 @@ import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
-  const { loading, data } = useQuery(GET_ME);
+  const { loading, data } = useQuery(GET_ME, {
+    fetchPolicy: "no-cache"
+  });
   const userData = data?.me || {};
   const [deleteBook] = useMutation(REMOVE_BOOK);
-  console.log({ userData });
+  console.log("userData.savedBooks is ", userData.savedBooks);
+  console.log("data ", data);
 
   if (!userData?.username) {
     return <h4>You need to be logged in to see this page!</h4>;
@@ -35,19 +38,27 @@ const SavedBooks = () => {
           const updatedBookCache = savedBooksCache.filter(
             (book) => book.bookId !== bookId
           );
+          console.log("updatedBookCache is ", updatedBookCache);
+
           data.me.savedBooks = updatedBookCache;
+          // data.me.savedBooks is correct
+          console.log("data.me.savedBooks is ", data.me.savedBooks);
+
           cache.writeQuery({
             query: GET_ME,
             data: { data: { ...data.me.savedBooks } },
           });
+          console.log("data.me.savedBooks is ", data.me.savedBooks, " and userData.savedBooks is ", userData.savedBooks);
         },
       });
-      
+
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
+      console.log("data.me.savedBooks is ", data.me.savedBooks, " and userData.savedBooks is ", userData.savedBooks);
     } catch (err) {
       console.error(err);
     }
+    window.location.reload();
   };
 
   // if data isn't here yet, say so
@@ -64,12 +75,12 @@ const SavedBooks = () => {
       </div>
       <Container>
         <h2 className='pt-5'>
-          {userData.savedBooks?.length
+          {userData.savedBooks.length
             ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'}
         </h2>
         <Row>
-          {userData.savedBooks?.map((book) => {
+          {userData.savedBooks.map((book) => {
             return (
               <Col md="4" key={book.bookId}>
                 <Card border='dark'>
