@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Button, Row, Col } from "react-bootstrap";
-
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from "../utils/queries";
 import { REMOVE_BOOK } from "../utils/mutations";
@@ -8,19 +7,13 @@ import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
-  const { loading, data } = useQuery(GET_ME, {
-    fetchPolicy: "no-cache"
-  });
+  const { loading, data } = useQuery(GET_ME, 
+    {fetchPolicy: "no-cache"}
+  );
   const userData = data?.me || {};
+
   const [deleteBook] = useMutation(REMOVE_BOOK);
-  console.log("userData.savedBooks is ", userData.savedBooks);
-  console.log("data ", data);
 
-  if (!userData?.username) {
-    return <h4>You need to be logged in to see this page!</h4>;
-  }
-
-  // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
@@ -31,44 +24,23 @@ const SavedBooks = () => {
     try {
       await deleteBook({
         variables: { bookId: bookId },
-        update: (cache) => {
-          const data = cache.readQuery({ query: GET_ME });
-          const userDataCache = data.me;
-          const savedBooksCache = userDataCache.savedBooks;
-          const updatedBookCache = savedBooksCache.filter(
-            (book) => book.bookId !== bookId
-          );
-          console.log("updatedBookCache is ", updatedBookCache);
-
-          data.me.savedBooks = updatedBookCache;
-          // data.me.savedBooks is correct
-          console.log("data.me.savedBooks is ", data.me.savedBooks);
-
-          cache.writeQuery({
-            query: GET_ME,
-            data: { data: { ...data.me.savedBooks } },
-          });
-          console.log("data.me.savedBooks is ", data.me.savedBooks, " and userData.savedBooks is ", userData.savedBooks);
-        },
       });
 
-      // upon success, remove book's id from localStorage
       removeBookId(bookId);
-      console.log("data.me.savedBooks is ", data.me.savedBooks, " and userData.savedBooks is ", userData.savedBooks);
+
     } catch (err) {
       console.error(err);
     }
     window.location.reload();
   };
 
-  // if data isn't here yet, say so
   if (loading) {
     return <h2>LOADING...</h2>;
   }
 
   return (
     <>
-      <div fluid className="text-light bg-dark p-5">
+      <div fluid="true" className="text-light bg-dark p-5">
         <Container>
           <h1>Viewing saved books!</h1>
         </Container>
