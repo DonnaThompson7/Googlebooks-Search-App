@@ -28,14 +28,15 @@ const SavedBooks = () => {
         variables: { bookId: bookId },
       });
 
-    if (!removeBookId(bookId)) {
-      return <h2>LOADING...</h2>;
-    }
+    removeBookId(bookId);
 
     } catch (err) {
       console.error(err);
     }
-    window.location.reload();
+    // window.location.reload();
+
+    return;
+  
   };
 
   if (loading) {
