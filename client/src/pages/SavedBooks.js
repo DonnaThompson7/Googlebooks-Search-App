@@ -10,6 +10,8 @@ const SavedBooks = () => {
   const { loading, data } = useQuery(GET_ME, 
     {fetchPolicy: "no-cache"}
   );
+  console.log("%%%finished GET_ME");
+  
   const userData = data?.me || {};
 
   const [deleteBook] = useMutation(REMOVE_BOOK);
