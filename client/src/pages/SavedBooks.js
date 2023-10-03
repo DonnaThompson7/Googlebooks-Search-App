@@ -11,7 +11,7 @@ const SavedBooks = () => {
     {fetchPolicy: "no-cache"}
   );
   console.log("%%%finished GET_ME");
-  
+
   const userData = data?.me || {};
 
   const [deleteBook] = useMutation(REMOVE_BOOK);
@@ -28,7 +28,9 @@ const SavedBooks = () => {
         variables: { bookId: bookId },
       });
 
-      removeBookId(bookId);
+    if (!removeBookId(bookId)) {
+      return <h2>LOADING...</h2>;
+    }
 
     } catch (err) {
       console.error(err);
