@@ -25,7 +25,7 @@
   
 
   ## **Link to deployed app via Heroku**
- [Link to Portfolio](https://donnathompson7.github.io/DThompson-Portfolio/)
+ [Link to deployed app](https://morning-sierra-83538-7272b75177cb.herokuapp.com/)
  
   ## **Usage**
 
