@@ -5,13 +5,11 @@ import { GET_ME } from "../utils/queries";
 import { REMOVE_BOOK } from "../utils/mutations";
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
-import { redirect } from  "react-router-dom";
+// import { useLazyQuery } from '@apollo/client';
 
 const SavedBooks = () => {
-  const { loading, data } = useQuery(GET_ME, 
-    {fetchPolicy: "no-cache"}
-  );
-  console.log("%%%finished GET_ME");
+  const { loading, data, refetch } = useQuery(GET_ME);
+  refetch();
 
   const userData = data?.me || {};
 
@@ -30,14 +28,11 @@ const SavedBooks = () => {
       });
 
     removeBookId(bookId);
+    refetch();
 
     } catch (err) {
       console.error(err);
     }
-
-    window.location = '/saved';
-    // return redirect('/saved'); 
-
   };
 
   if (loading) {
