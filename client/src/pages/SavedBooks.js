@@ -5,6 +5,7 @@ import { GET_ME } from "../utils/queries";
 import { REMOVE_BOOK } from "../utils/mutations";
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
+import { redirect } from  "react-router-dom";
 
 const SavedBooks = () => {
   const { loading, data } = useQuery(GET_ME, 
@@ -33,10 +34,10 @@ const SavedBooks = () => {
     } catch (err) {
       console.error(err);
     }
-    // window.location.reload();
 
-    return;
-  
+    window.location = '/saved';
+    // return redirect('/saved'); 
+
   };
 
   if (loading) {
